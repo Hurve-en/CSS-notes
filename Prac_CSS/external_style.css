@@ -1,11 +1,15 @@
 /*to get local fonts from your folder*/
 @font-face{
     src: url(fonts/BBHSansBartle-Regular.ttf);
-    font-family: Bartle;
+    font-family: Bartle; /* can modify name of the font */
 }
 
+/* use # to select id */
+/* use . to select class */
+
+
 body{
-    border: 3px solid;
+    
     background-color: lightblue;
     margin: 50px; /* adjust margins */
     display: flow-root; /*float*/
@@ -34,6 +38,32 @@ body{
 
 }
 
+/* overflow */
+#div1{
+    border: 2px solid;
+    height: 75px;
+    overflow: auto;
+}
+
+/* display property */
+#div2{    
+    background-color: red;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    visibility: hidden;
+}
+
+.span1{
+    background-color: blue;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    visibility: hidden;
+}
+
+
+
 .box{
     border: 5px solid;
     font-size: 5em;
@@ -41,9 +71,7 @@ body{
     height: 250px;
 }
 
-p{
-  
-}
+
 /* shadows */
 h1{
    text-shadow: 3px  3px 5px hsl(0, 100%, 61%), -3px  3px 5px hsl(231, 65%, 39%) ; /* horizontal offset, vertical offset, Blur */
@@ -55,8 +83,8 @@ h2,h3{
     color: black;
     text-align: center;
 }
-/* use # to select id */
 
+/* borders */
 #p1{ 
     font: bold italic 16px Georgia, serif;
     color:blueviolet;
