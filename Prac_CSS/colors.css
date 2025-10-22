@@ -1,0 +1,25 @@
+
+/* Colors */
+#p1{ 
+    color:blueviolet;
+}
+
+#p2{
+   color: rgb(255, 240, 244);
+}
+
+#p3{
+    color: #59ff5f;
+}
+
+.p4{
+    color:hwb(271 16% 49%);
+}
+
+.p5{
+    color:hsl(272, 62%, 25%);
+}
+
+.p6{
+    color:rgb(102,222,255);
+}
