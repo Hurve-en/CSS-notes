@@ -1,0 +1,16 @@
+/* display property */
+#display1{    
+    background-color: red;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    visibility: hidden;
+}
+
+.display2{
+    background-color: blue;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    visibility: hidden;
+}

@@ -1,0 +1,26 @@
+#prop1 {
+    width: 200px;
+    height: 200px;
+    background-color: hsl(240, 47%, 37%);
+    position: sticky;
+    top:0px;
+}
+
+#prop2{
+    width: 100px;
+    height: 100px;
+    background-color: hsl(0, 80%, 39%);
+    position: static;
+    top: 50px;
+    left: 50px;
+}
+
+/*  position:
+
+    relative
+    fixed
+    absolute
+    sticky
+    static
+
+*/

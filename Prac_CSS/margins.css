@@ -1,0 +1,22 @@
+/* margins */
+#img1{
+    float: left;
+    margin-right: 10px;
+}
+
+#img2{
+    float: right;
+    margin-left: 10px;
+}
+
+
+#margin1{
+   background-color: red;
+   margin: 50px;
+}
+
+#margin2{
+    background-color: blue;
+    margin: 50px;
+
+}
