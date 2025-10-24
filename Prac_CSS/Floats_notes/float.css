@@ -1,0 +1,11 @@
+
+/* float */
+#float1{
+    float: left;
+    margin-right: 10px;
+}
+
+#flot2{
+    float: right;
+    margin-left: 10px;
+}

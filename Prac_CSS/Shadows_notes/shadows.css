@@ -1,5 +1,5 @@
 /* shadows */
-h1{
+#shadow1{
    text-shadow: 3px  3px 5px hsl(0, 100%, 61%), -3px  3px 5px hsl(231, 65%, 39%) ; /* horizontal offset, vertical offset, Blur */
     box-shadow: 3px 3px 5px;
 }

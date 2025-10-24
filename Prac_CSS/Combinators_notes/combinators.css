@@ -1,0 +1,38 @@
+/* combinators
+
+    (space) - descendant
+    ~   - general sibling
+    >   - child
+    +   -adjecent sibling
+
+*/
+
+#combinator1{
+    border: 2px solid;
+}
+
+
+/* descendant (space) */
+
+#combinator1 p{ 
+    background-color: yellow;
+}
+
+/* child > */
+
+#combinator1 > p{ 
+    background-color: yellow;
+}
+
+/* general  siblking~ */
+
+#combinator1 ~ p{ 
+    background-color: yellow;
+}
+
+/* adjecent  siblking~ */
+
+#combinator1 + p{ 
+    background-color: yellow;
+}
+

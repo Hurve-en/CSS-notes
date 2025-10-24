@@ -1,6 +1,11 @@
 /*borders*/
 
-#Border{ 
+
+#Border1{
+    border: 3px inset black; /*border-width: 3px; border-style: solid; border-color: black;*/
+}
+
+#Border2{ 
     border-radius: 10px;
     border-bottom: 3px solid red;
     border-left: 3px solid red;

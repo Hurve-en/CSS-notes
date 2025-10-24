@@ -1,0 +1,22 @@
+
+/* external style sheet */
+
+/* use # to select id */
+/* use . to select class */
+
+
+body{
+    
+    background-color: lightblue;
+    margin: 50px; /* adjust margins */
+    display: flow-root; /*float*/
+}
+
+
+#style1{
+    color: #59ff5f;
+}
+
+.style2{
+    color:rgb(102,222,255);
+}

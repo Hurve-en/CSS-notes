@@ -1,0 +1,43 @@
+/*to get local fonts from your folder*/
+@font-face{
+    src: url(fonts/BBHSansBartle-Regular.ttf);
+    font-family: Bartle; /* can modify name of the font */
+}
+
+.font1{
+    font-family: Bartle;
+    color: black;
+    text-align: center;
+}
+
+.font2{
+    font: bold italic 16px Georgia, serif;
+    color:hwb(271 16% 49%);
+}
+
+.font3{
+    font: bold italic 16px Georgia, serif;
+    color:hsl(272, 62%, 25%);
+}
+
+.font4{
+    color:rgb(102,222,255);
+}
+
+/* for font 
+(can select multiple fonts)
+1.)font-family:"lucida console", "courier new"
+
+(can select size)
+2.)font-size:16px/em/%
+
+(can select weight)
+3.)font-weight:bold/normal
+
+(can select style)
+4.)font-style:italic/normal
+*/
+
+/* Google fonts
+https://fonts.google.com/
+*/
