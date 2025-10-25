@@ -1,0 +1,51 @@
+button:hover{
+    font-size: 1.1em;
+    background-color: hsl(0, 69%, 42%);
+}
+
+/* color of the link */
+a:link {
+    color: rgb(194, 93, 93);
+}
+
+/* hover is an example of pseudo class it modifies our button behavior*/
+a:hover {
+    color: aqua;
+    font-size: 1.1em;
+}
+/* active is when an item is currently selected */
+a:active{
+    color: darkblue;
+    font-size:  1.1em;
+}
+
+/* a color when you already visited the site */
+a:visited {
+    color: rgb(212, 14, 14);
+}
+
+
+/* pseudo class using list */
+li:hover {
+    background-color: aqua;
+}
+
+li:not(:hover) {
+    background-color: rgb(179, 25, 25);
+}
+
+li:nth-child(even){
+    background-color: yellow;
+}
+
+
+/* drop down menu example */
+#greeting p{
+    background-color: rgb(67, 67, 156);
+    padding: 10px;
+    display: none;
+}
+
+#greeting:hover p{
+    display: block;
+}
