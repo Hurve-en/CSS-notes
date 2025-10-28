@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database & SQL Practice Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .quiz-container {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    color: #333;
+  }
+  .question {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .option {
+    display: block;
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: background 0.2s;
+  }
+  .option:hover {
+    background: #f0f0f0;
+  }
+  #next-btn {
+    display: block;
+    margin: 20px auto;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #next-btn:hover {
+    background: #0056b3;
+  }
+  .result {
+    text-align: center;
+    font-size: 20px;
+  }
+  .wrong-list {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 16px;
+    color: #c00;
+  }
+</style>
+</head>
+<body>
+<div class="quiz-container">
+  <h1>Database & SQL Practice Quiz</h1>
+  <div id="quiz">
+    <p class="question" id="question"></p>
+    <div id="options"></div>
+    <button id="next-btn">Next</button>
+  </div>
+  <div id="result" class="result" style="display:none;"></div>
+  <div id="wrong-list" class="wrong-list"></div>
+</div>
+
+<script>
+const quizData = [
+{q:"Which SQL clause is used to group rows with the same values in one or more columns?", options:["ORDER BY","WHERE","GROUP BY","HAVING"], answer:"GROUP BY"},
+{q:"What does normalization primarily aim to remove?", options:["Extra indexes","Anomalies","Columns","Views"], answer:"Anomalies"},
+{q:"In database design, which step involves gathering user needs and business rules?", options:["Implementation","Conceptual modeling","Requirements specification","Physical modeling"], answer:"Requirements specification"},
+{q:"Which SQL command is used to modify existing records in a table?", options:["UPDATE","MODIFY","ALTER TABLE","CHANGE"], answer:"UPDATE"},
+{q:"In which normal form are partial dependencies removed?", options:["1NF","2NF","3NF","BCNF"], answer:"2NF"},
+{q:"Which SQL keyword is used to add new data to a table?", options:["UPDATE","INSERT INTO","CREATE","ADD"], answer:"INSERT INTO"},
+{q:"What is the purpose of a FOREIGN KEY constraint?", options:["To identify each row uniquely","To store binary data","To link tables together","To delete duplicate rows"], answer:"To link tables together"},
+{q:"Which SQL clause filters the results of groups after aggregation?", options:["WHERE","HAVING","ORDER BY","GROUP BY"], answer:"HAVING"},
+{q:"Which model uses ER diagrams and data dictionaries?", options:["Physical","Logical","Conceptual","Implementation"], answer:"Conceptual"},
+{q:"What does the DROP TABLE command do?", options:["Deletes all rows only","Removes table structure and data","Changes table name","Removes columns only"], answer:"Removes table structure and data"},
+{q:"In 1NF, each cell should contain:", options:["Multiple values","Atomic (single) values","Composite attributes","Foreign keys"], answer:"Atomic (single) values"},
+{q:"Which normal form removes transitive dependencies?", options:["2NF","3NF","BCNF","4NF"], answer:"3NF"},
+{q:"Which SQL clause is used to rename a column or table?", options:["AS","RENAME","MODIFY","ALIAS"], answer:"AS"},
+{q:"Which SQL command belongs to DDL (Data Definition Language)?", options:["UPDATE","DELETE","CREATE","INSERT"], answer:"CREATE"},
+{q:"Which SQL keyword retrieves all columns from a table?", options:["SHOW *","SELECT *","DISPLAY *","VIEW *"], answer:"SELECT *"},
+{q:"Which model defines indexes, partitions, and storage details?", options:["Conceptual model","Physical model","Logical model","Implementation model"], answer:"Physical model"},
+{q:"Which command removes specific rows from a table?", options:["DELETE","DROP TABLE","TRUNCATE","REMOVE"], answer:"DELETE"},
+{q:"What does the UPDATE command require to modify only specific rows?", options:["SET","WHERE","HAVING","ORDER BY"], answer:"WHERE"},
+{q:"Which SQL keyword sorts query results?", options:["SORT BY","ORDER BY","ARRANGE BY","GROUP BY"], answer:"ORDER BY"},
+{q:"What is the main goal of optimization in databases?", options:["Remove anomalies","Speed up queries","Normalize data","Add constraints"], answer:"Speed up queries"},
+{q:"Which SQL command removes both the structure and data of a table permanently?", options:["DELETE","DROP TABLE","TRUNCATE","REMOVE"], answer:"DROP TABLE"},
+{q:"Which normal form removes multi-valued dependencies?", options:["3NF","4NF","BCNF","5NF"], answer:"4NF"},
+{q:"What does DML stand for?", options:["Database Management Layer","Data Manipulation Language","Data Modeling Logic","Data Machine Language"], answer:"Data Manipulation Language"},
+{q:"What does the PRIMARY KEY constraint do?", options:["Allows duplicates","Allows NULL values","Ensures uniqueness and non-null","Creates an index"], answer:"Ensures uniqueness and non-null"},
+{q:"Which SQL clause filters rows before grouping?", options:["WHERE","HAVING","GROUP BY","FILTER"], answer:"WHERE"},
+{q:"Which normal form is rare and removes join dependencies?", options:["3NF","4NF","5NF","BCNF"], answer:"5NF"},
+{q:"In SQLite, which join type is not directly supported?", options:["INNER JOIN","RIGHT JOIN","LEFT JOIN","CROSS JOIN"], answer:"RIGHT JOIN"},
+{q:"Which SQL function counts the number of rows?", options:["SUM","COUNT","TOTAL","NUM"], answer:"COUNT"},
+{q:"What does ALTER TABLE ... ADD do?", options:["Deletes rows","Adds a new column","Creates a new table","Modifies all rows"], answer:"Adds a new column"},
+{q:"Which model converts ERDs into tables with PKs and FKs?", options:["Conceptual","Logical","Physical","Implementation"], answer:"Logical"},
+{q:"What is an update anomaly?", options:["Duplicate primary key","Data inconsistency when updating","Slow query performance","Incorrect foreign key link"], answer:"Data inconsistency when updating"},
+{q:"Which SQL command defines the structure of a new table?", options:["ALTER TABLE","INSERT INTO","CREATE TABLE","UPDATE"], answer:"CREATE TABLE"},
+{q:"SQL stands for:", options:["Standard Query Language","Simple Query Logic","Structured Query Language","Sequential Query Language"], answer:"Structured Query Language"},
+{q:"Which command is part of the implementation step of database design?", options:["CREATE TABLE","SELECT *","UPDATE TABLE","ADD INDEX"], answer:"CREATE TABLE"},
+{q:"In 3NF, which dependencies are removed?", options:["Partial","Transitive","Multi-valued","Join"], answer:"Transitive"},
+{q:"Which normal form is stricter than 3NF and requires every determinant to be a candidate key?", options:["4NF","5NF","BCNF","2NF"], answer:"BCNF"},
+{q:"Which SQL clause combines rows from two tables using matching column values?", options:["JOIN","MERGE","UNION","GROUP BY"], answer:"JOIN"},
+{q:"Which SQL clause specifies the table to insert data into?", options:["SET","VALUES","INTO","FROM"], answer:"INTO"},
+{q:"What kind of language is SQL?", options:["Programming language","Scripting language","Query language","Markup language"], answer:"Query language"},
+{q:"Which example is a business rule?", options:["Each course is taught by one teacher","Teachers have multiple tables","Every key is unique","Tables have atomic columns"], answer:"Each course is taught by one teacher"},
+{q:"Which command changes the structure of an existing table?", options:["ALTER TABLE","MODIFY","UPDATE TABLE","ADD TABLE"], answer:"ALTER TABLE"},
+{q:"What does the HAVING clause work with?", options:["Aggregate results","Filtering columns","Sorting rows","Joins"], answer:"Aggregate results"},
+{q:"Which SQL statement retrieves data from a table?", options:["FETCH","GET","SELECT","SHOW"], answer:"SELECT"},
+{q:"Which step in database design identifies entities and attributes?", options:["Implementation","Analysis","Logical model","Optimization"], answer:"Analysis"},
+{q:"Production databases usually normalize up to which normal form?", options:["2NF","3NF","BCNF","5NF"], answer:"3NF"}
+];
+
+let current = 0;
+let score = 0;
+let wrongAnswers = [];
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("next-btn");
+const resultEl = document.getElementById("result");
+const wrongListEl = document.getElementById("wrong-list");
+
+function showQuestion() {
+  const q = quizData[current];
+  questionEl.textContent = `${current + 1}. ${q.q}`;
+  optionsEl.innerHTML = "";
+  q.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.classList.add("option");
+    btn.textContent = option;
+    btn.onclick = () => selectAnswer(option);
+    optionsEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(option) {
+  const correct = quizData[current].answer;
+  if (option === correct) {
+    score++;
+  } else {
+    wrongAnswers.push(current + 1);
+  }
+  nextQuestion();
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quizData.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz").style.display = "none";
+  resultEl.style.display = "block";
+  resultEl.textContent = `You scored ${score} out of ${quizData.length}!`;
+  if (wrongAnswers.length > 0) {
+    wrongListEl.textContent = `You got these numbers wrong: ${wrongAnswers.join(", ")}`;
+  } else {
+    wrongListEl.textContent = "Perfect score! 🎉";
+  }
+}
+
+nextBtn.onclick = nextQuestion;
+showQuestion();
+</script>
+</body>
+</html>
