@@ -1,190 +1,479 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Database & SQL Practice Quiz</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Database & SQL Flashcard Quiz</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f2f4f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+  :root{
+    --bg:#f4f6f8;
+    --card:#ffffff;
+    --accent:#0b74da;
+    --muted:#6b7280;
+    --correct:#16a34a;
+    --wrong:#dc2626;
   }
-  .quiz-container {
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:28px;
   }
-  h1 {
-    text-align: center;
-    font-size: 22px;
-    color: #333;
+  .app {
+    width:100%;
+    max-width:920px;
+    background:var(--card);
+    border-radius:12px;
+    box-shadow:0 8px 30px rgba(16,24,40,0.08);
+    padding:20px;
   }
-  .question {
-    font-size: 18px;
-    margin-bottom: 10px;
+
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:6px;
   }
+  h1 { font-size:20px; margin:0; color:#0f172a; }
+  p.lead{ margin:0; color:var(--muted); font-size:13px }
+
+  .card{
+    margin-top:18px;
+    padding:18px;
+    border-radius:10px;
+    background:linear-gradient(180deg, rgba(11,116,218,0.03), transparent);
+    border:1px solid rgba(11,116,218,0.06);
+  }
+
+  .qmeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .progress{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .question{
+    font-size:18px;
+    color:#0f172a;
+    margin:6px 0 14px;
+  }
+
+  .options{
+    display:grid;
+    gap:8px;
+  }
+
   .option {
-    display: block;
-    margin: 8px 0;
-    padding: 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    transition: background 0.2s;
+    background:#fff;
+    border:1px solid #e6eef9;
+    padding:12px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    text-align:left;
+    transition: all .12s ease;
+    box-shadow: 0 1px 0 rgba(16,24,40,0.02);
+    font-size:15px;
   }
-  .option:hover {
-    background: #f0f0f0;
+  .option:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,24,40,0.06) }
+  .option.selected { border-color:var(--accent); background: linear-gradient(90deg, rgba(11,116,218,0.06), rgba(11,116,218,0.02)); }
+  .controls{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-top:14px;
   }
-  #next-btn {
-    display: block;
-    margin: 20px auto;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
+  button.btn{
+    border:0;
+    background:var(--accent);
+    color:white;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
   }
-  #next-btn:hover {
-    background: #0056b3;
+  button.ghost{
+    background:transparent;
+    border:1px solid #e6eef9;
+    color:var(--muted);
+    padding:9px 12px;
   }
-  .result {
-    text-align: center;
-    font-size: 20px;
+  .btn[disabled]{ opacity:0.5; cursor:not-allowed }
+
+  /* Results */
+  .results{
+    margin-top:16px;
+    padding:14px;
+    border-radius:10px;
+    background:#fff;
+    border:1px solid rgba(15,23,42,0.04);
   }
-  .wrong-list {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 16px;
-    color: #c00;
+  .score{
+    font-size:20px;
+    font-weight:700;
+    color:#0f172a;
+    margin:0 0 8px 0;
+  }
+  .summary{
+    color:var(--muted);
+    margin:0 0 12px 0;
+  }
+  .wrong-list{
+    margin-top:8px;
+    display:grid;
+    gap:8px;
+  }
+  .wrong-item{
+    padding:10px;
+    border-radius:8px;
+    border:1px solid rgba(220,38,38,0.08);
+    background:rgba(220,38,38,0.03);
+    font-size:14px;
+  }
+  .wrong-item .qnum{ font-weight:700; color:var(--wrong) }
+  .correct-answer{ color:var(--correct); font-weight:600; }
+  .your-answer{ color:var(--wrong); font-weight:600; }
+
+  .controls-bottom{ display:flex; gap:8px; margin-top:16px; justify-content:space-between; align-items:center; }
+  .small { font-size:13px; color:var(--muted) }
+
+  /* Review all */
+  .review-grid{ margin-top:12px; display:grid; gap:12px; max-height:360px; overflow:auto; padding-right:6px; }
+  .review-card{ padding:10px; border-radius:8px; background:#fff; border:1px solid rgba(15,23,42,0.03) }
+  .opt-correct{ color:var(--correct); font-weight:700 }
+  .opt-wrong{ color:var(--wrong); text-decoration:line-through; }
+  @media (max-width:640px){
+    .controls { justify-content:center; }
+    header{ flex-direction:column; align-items:flex-start; gap:6px; }
   }
 </style>
 </head>
 <body>
-<div class="quiz-container">
-  <h1>Database & SQL Practice Quiz</h1>
-  <div id="quiz">
-    <p class="question" id="question"></p>
-    <div id="options"></div>
-    <button id="next-btn">Next</button>
+  <div class="app" role="application" aria-labelledby="title">
+    <header>
+      <div>
+        <h1 id="title">Database & SQL Flashcard Quiz</h1>
+        <p class="lead">45 questions — answer each, then get your score + which you missed with correct answers.</p>
+      </div>
+      <div class="small" id="statusTop">Ready</div>
+    </header>
+
+    <main>
+      <section class="card" id="quizArea" aria-live="polite">
+        <div class="qmeta">
+          <div class="progress" id="progress">Question 1 / 45</div>
+          <div class="progress" id="qType">Database & SQL</div>
+        </div>
+
+        <div class="question" id="questionText">Loading...</div>
+
+        <div id="options" class="options" role="list"></div>
+
+        <div class="controls">
+          <button class="ghost" id="prevBtn" title="Previous question">◀ Previous</button>
+          <button class="btn" id="nextBtn" disabled>Next ▶</button>
+        </div>
+      </section>
+
+      <section class="results" id="resultsArea" style="display:none">
+        <p class="score" id="scoreText">You scored X out of 45</p>
+        <p class="summary" id="summaryText">Summary text</p>
+
+        <div id="wrongContainer"></div>
+
+        <div class="controls-bottom">
+          <div>
+            <button class="ghost" id="reviewBtn">Review All</button>
+            <button class="ghost" id="downloadBtn">Download Results</button>
+          </div>
+          <div>
+            <button class="ghost" id="retakeBtn">Retake Quiz</button>
+            <button class="btn" id="closeReviewBtn" style="display:none">Close Review</button>
+          </div>
+        </div>
+
+        <div id="reviewAll" style="display:none; margin-top:12px">
+          <div class="review-grid" id="reviewGrid"></div>
+        </div>
+      </section>
+    </main>
   </div>
-  <div id="result" class="result" style="display:none;"></div>
-  <div id="wrong-list" class="wrong-list"></div>
-</div>
 
 <script>
+/* ---------- Quiz data: uses your questions & answers exactly ---------- */
 const quizData = [
-{q:"Which SQL clause is used to group rows with the same values in one or more columns?", options:["ORDER BY","WHERE","GROUP BY","HAVING"], answer:"GROUP BY"},
-{q:"What does normalization primarily aim to remove?", options:["Extra indexes","Anomalies","Columns","Views"], answer:"Anomalies"},
-{q:"In database design, which step involves gathering user needs and business rules?", options:["Implementation","Conceptual modeling","Requirements specification","Physical modeling"], answer:"Requirements specification"},
-{q:"Which SQL command is used to modify existing records in a table?", options:["UPDATE","MODIFY","ALTER TABLE","CHANGE"], answer:"UPDATE"},
-{q:"In which normal form are partial dependencies removed?", options:["1NF","2NF","3NF","BCNF"], answer:"2NF"},
-{q:"Which SQL keyword is used to add new data to a table?", options:["UPDATE","INSERT INTO","CREATE","ADD"], answer:"INSERT INTO"},
-{q:"What is the purpose of a FOREIGN KEY constraint?", options:["To identify each row uniquely","To store binary data","To link tables together","To delete duplicate rows"], answer:"To link tables together"},
-{q:"Which SQL clause filters the results of groups after aggregation?", options:["WHERE","HAVING","ORDER BY","GROUP BY"], answer:"HAVING"},
-{q:"Which model uses ER diagrams and data dictionaries?", options:["Physical","Logical","Conceptual","Implementation"], answer:"Conceptual"},
-{q:"What does the DROP TABLE command do?", options:["Deletes all rows only","Removes table structure and data","Changes table name","Removes columns only"], answer:"Removes table structure and data"},
-{q:"In 1NF, each cell should contain:", options:["Multiple values","Atomic (single) values","Composite attributes","Foreign keys"], answer:"Atomic (single) values"},
-{q:"Which normal form removes transitive dependencies?", options:["2NF","3NF","BCNF","4NF"], answer:"3NF"},
-{q:"Which SQL clause is used to rename a column or table?", options:["AS","RENAME","MODIFY","ALIAS"], answer:"AS"},
-{q:"Which SQL command belongs to DDL (Data Definition Language)?", options:["UPDATE","DELETE","CREATE","INSERT"], answer:"CREATE"},
-{q:"Which SQL keyword retrieves all columns from a table?", options:["SHOW *","SELECT *","DISPLAY *","VIEW *"], answer:"SELECT *"},
-{q:"Which model defines indexes, partitions, and storage details?", options:["Conceptual model","Physical model","Logical model","Implementation model"], answer:"Physical model"},
-{q:"Which command removes specific rows from a table?", options:["DELETE","DROP TABLE","TRUNCATE","REMOVE"], answer:"DELETE"},
-{q:"What does the UPDATE command require to modify only specific rows?", options:["SET","WHERE","HAVING","ORDER BY"], answer:"WHERE"},
-{q:"Which SQL keyword sorts query results?", options:["SORT BY","ORDER BY","ARRANGE BY","GROUP BY"], answer:"ORDER BY"},
-{q:"What is the main goal of optimization in databases?", options:["Remove anomalies","Speed up queries","Normalize data","Add constraints"], answer:"Speed up queries"},
-{q:"Which SQL command removes both the structure and data of a table permanently?", options:["DELETE","DROP TABLE","TRUNCATE","REMOVE"], answer:"DROP TABLE"},
-{q:"Which normal form removes multi-valued dependencies?", options:["3NF","4NF","BCNF","5NF"], answer:"4NF"},
-{q:"What does DML stand for?", options:["Database Management Layer","Data Manipulation Language","Data Modeling Logic","Data Machine Language"], answer:"Data Manipulation Language"},
-{q:"What does the PRIMARY KEY constraint do?", options:["Allows duplicates","Allows NULL values","Ensures uniqueness and non-null","Creates an index"], answer:"Ensures uniqueness and non-null"},
-{q:"Which SQL clause filters rows before grouping?", options:["WHERE","HAVING","GROUP BY","FILTER"], answer:"WHERE"},
-{q:"Which normal form is rare and removes join dependencies?", options:["3NF","4NF","5NF","BCNF"], answer:"5NF"},
-{q:"In SQLite, which join type is not directly supported?", options:["INNER JOIN","RIGHT JOIN","LEFT JOIN","CROSS JOIN"], answer:"RIGHT JOIN"},
-{q:"Which SQL function counts the number of rows?", options:["SUM","COUNT","TOTAL","NUM"], answer:"COUNT"},
-{q:"What does ALTER TABLE ... ADD do?", options:["Deletes rows","Adds a new column","Creates a new table","Modifies all rows"], answer:"Adds a new column"},
-{q:"Which model converts ERDs into tables with PKs and FKs?", options:["Conceptual","Logical","Physical","Implementation"], answer:"Logical"},
-{q:"What is an update anomaly?", options:["Duplicate primary key","Data inconsistency when updating","Slow query performance","Incorrect foreign key link"], answer:"Data inconsistency when updating"},
-{q:"Which SQL command defines the structure of a new table?", options:["ALTER TABLE","INSERT INTO","CREATE TABLE","UPDATE"], answer:"CREATE TABLE"},
+/* Quiz 1 - Database Design and Normalization (20) */
+{q:"Which of these belongs to the analysis step?", options:["Defining indexes and storage","Identifying entities and attributes","Writing CREATE TABLE statements","Deciding partitions and hardware"], answer:"Identifying entities and attributes"},
+{q:"Which step defines indexes and storage structures?", options:["Conceptual Model","Requirements specification","Implementation","Physical Model"], answer:"Physical Model"},
+{q:"Which model uses ERDs and data dictionaries?", options:["Physical Model","Logical Model","Conceptual Model","Implementation Model"], answer:"Conceptual Model"},
+{q:"Which normal form is rare in practice but removes join dependencies?", options:["4NF","3NF","5NF","BCNF"], answer:"5NF"},
+{q:"In 2NF, what is removed?", options:["Transitive dependencies","Partial dependencies","Atomic values","Join dependencies"], answer:"Partial dependencies"},
+{q:"In 1NF, which rule applies?", options:["Remove transitive dependencies","Ensure atomic values","Require candidate keys","Remove multi-valued dependencies"], answer:"Ensure atomic values"},
+{q:"What does the Implementation step usually produce?", options:["ER diagrams","CREATE TABLE statements","Business rules","Index definitions only"], answer:"CREATE TABLE statements"},
+{q:"Which is an example of a business rule in requirements?", options:["Each course can have many teachers","Each course is taught by one teacher","Tables must be normalized","Indexes are required"], answer:"Each course is taught by one teacher"},
+{q:"Which example is an update anomaly?", options:["Teacher duplicated into two tables","Teacher changes department but some rows are outdated","A table has no primary key","Multiple rows with same PK"], answer:"Teacher changes department but some rows are outdated"},
+{q:"Which statement about production databases is TRUE?", options:["They usually stop at 5NF","They usually stop at 3NF","They never normalize","They always use BCNF"], answer:"They usually stop at 3NF"},
+{q:"What is the purpose of normalization?", options:["Add redundancy","Remove anomalies","Increase storage use","Improve UI"], answer:"Remove anomalies"},
+{q:"Which SQL command is part of the implementation step?", options:["INSERT INTO","CREATE TABLE","SELECT","UPDATE"], answer:"CREATE TABLE"},
+{q:"Which model considers storage partitions and hardware?", options:["Conceptual","Logical","Implementation","Physical"], answer:"Physical"},
+{q:"What is the main goal of optimization?", options:["Increase redundancy","Speed up queries","Normalize to BCNF","Remove primary keys"], answer:"Speed up queries"},
+{q:"Which step focuses on gathering user needs and business rules?", options:["Implementation","Analysis","Optimization","Requirements Specification"], answer:"Requirements Specification"},
+{q:"Which is NOT a data anomaly?", options:["Insertion anomaly","Aggregation","Deletion anomaly","Update anomaly"], answer:"Aggregation"},
+{q:"Which normal form eliminates multi-valued dependencies?", options:["3NF","4NF","BCNF","5NF"], answer:"4NF"},
+{q:"What is stronger than 3NF and requires every determinant to be a candidate key?", options:["4NF","5NF","BCNF","2NF"], answer:"BCNF"},
+{q:"In 3NF, which dependency must be removed?", options:["Partial dependency","Transitive dependency","Multi-valued dependency","Join dependency"], answer:"Transitive dependency"},
+{q:"Which model translates ERDs into tables, PKs, and FKs?", options:["Conceptual","Physical","Implementation","Logical"], answer:"Logical"},
+
+/* Quiz 2 - SQL Basics and Queries (15) */
+{q:"Which query counts how many students are in each year level?", options:["SELECT year_level, COUNT(*) FROM students GROUP BY year_level;","SELECT COUNT(*) FROM students;","SELECT * FROM students;","SELECT year_level FROM students;"], answer:"SELECT year_level, COUNT(*) FROM students GROUP BY year_level;"},
+{q:"SQL belongs to which category?", options:["Programming language","Query language","Scripting language","Markup language"], answer:"Query language"},
+{q:"Given a table students(student_id, first_name, last_name), which query shows all columns?", options:["SELECT id FROM students;","SELECT * FROM students;","SHOW COLUMNS students;","DISPLAY students;"], answer:"SELECT * FROM students;"},
+{q:"DISTINCT is used to:", options:["Show only unique values","Filter groups","Sort the result","Rename columns"], answer:"Show only unique values"},
+{q:"Which SQL clause sorts the result?", options:["GROUP BY","WHERE","ORDER BY","HAVING"], answer:"ORDER BY"},
+{q:"Which clause filters after grouping?", options:["WHERE","HAVING","ORDER BY","JOIN"], answer:"HAVING"},
+{q:"Which query shows each student with their course_id (students + enrollments)?", options:["SELECT * FROM students CROSS JOIN enrollments;","SELECT s.first_name, s.last_name, e.course_id FROM students s JOIN enrollments e ON s.student_id = e.student_id;","SELECT s.*, e.* FROM students s WHERE s.student_id = e.student_id;","SELECT first_name, last_name, course_id FROM students;"], answer:"SELECT s.first_name, s.last_name, e.course_id FROM students s JOIN enrollments e ON s.student_id = e.student_id;"},
+{q:"In SQLite, which join is not supported directly?", options:["INNER JOIN","RIGHT JOIN","LEFT JOIN","CROSS JOIN"], answer:"RIGHT JOIN"},
+{q:"Which SQL command is used to retrieve data?", options:["SELECT","INSERT","UPDATE","DELETE"], answer:"SELECT"},
+{q:"The aggregate function that counts rows is:", options:["SUM","COUNT","AVG","LENGTH"], answer:"COUNT"},
+{q:"Which clause is used to filter rows?", options:["WHERE","HAVING","GROUP BY","ORDER BY"], answer:"WHERE"},
 {q:"SQL stands for:", options:["Standard Query Language","Simple Query Logic","Structured Query Language","Sequential Query Language"], answer:"Structured Query Language"},
-{q:"Which command is part of the implementation step of database design?", options:["CREATE TABLE","SELECT *","UPDATE TABLE","ADD INDEX"], answer:"CREATE TABLE"},
-{q:"In 3NF, which dependencies are removed?", options:["Partial","Transitive","Multi-valued","Join"], answer:"Transitive"},
-{q:"Which normal form is stricter than 3NF and requires every determinant to be a candidate key?", options:["4NF","5NF","BCNF","2NF"], answer:"BCNF"},
-{q:"Which SQL clause combines rows from two tables using matching column values?", options:["JOIN","MERGE","UNION","GROUP BY"], answer:"JOIN"},
-{q:"Which SQL clause specifies the table to insert data into?", options:["SET","VALUES","INTO","FROM"], answer:"INTO"},
-{q:"What kind of language is SQL?", options:["Programming language","Scripting language","Query language","Markup language"], answer:"Query language"},
-{q:"Which example is a business rule?", options:["Each course is taught by one teacher","Teachers have multiple tables","Every key is unique","Tables have atomic columns"], answer:"Each course is taught by one teacher"},
-{q:"Which command changes the structure of an existing table?", options:["ALTER TABLE","MODIFY","UPDATE TABLE","ADD TABLE"], answer:"ALTER TABLE"},
-{q:"What does the HAVING clause work with?", options:["Aggregate results","Filtering columns","Sorting rows","Joins"], answer:"Aggregate results"},
-{q:"Which SQL statement retrieves data from a table?", options:["FETCH","GET","SELECT","SHOW"], answer:"SELECT"},
-{q:"Which step in database design identifies entities and attributes?", options:["Implementation","Analysis","Logical model","Optimization"], answer:"Analysis"},
-{q:"Production databases usually normalize up to which normal form?", options:["2NF","3NF","BCNF","5NF"], answer:"3NF"}
+{q:"The AS keyword is used to:", options:["Rename columns or tables","Delete columns","Create tables","Count rows"], answer:"Rename columns or tables"},
+{q:"INNER JOIN returns:", options:["All rows from both tables","Matching rows from both","Rows from left table only","Rows from right table only"], answer:"Matching rows from both"},
+{q:"Which clause is used with aggregates to group data?", options:["ORDER BY","GROUP BY","HAVING","WHERE"], answer:"GROUP BY"},
+
+/* Quiz 3 - SQL Commands and Table Operations (18) */
+{q:"What does DML stand for in SQL?", options:["Database Management Layer","Data Manipulation Language","Data Modeling Logic","Data Machine Language"], answer:"Data Manipulation Language"},
+{q:"What does the DELETE command remove?", options:["Table structure","Data rows","Indexes","Constraints"], answer:"Data rows"},
+{q:"Which keyword defines a condition for updating rows?", options:["SET","WHERE","HAVING","GROUP BY"], answer:"WHERE"},
+{q:"In SQLite, which keyword adds a new column to a table?", options:["ADD COLUMN","ALTER TABLE ... ADD","CREATE COLUMN","INSERT COLUMN"], answer:"ALTER TABLE ... ADD"},
+{q:"Which statement adds a record to a table?", options:["UPDATE","INSERT INTO","CREATE","DELETE"], answer:"INSERT INTO"},
+{q:"Which of the following is a DDL command?", options:["UPDATE","DELETE","CREATE","INSERT"], answer:"CREATE"},
+{q:"In DDL, what does DROP TABLE do?", options:["Removes table structure and data","Deletes only rows","Removes columns only","Renames a table"], answer:"Removes table structure and data"},
+{q:"What is the purpose of a FOREIGN KEY constraint?", options:["Enforce uniqueness","Link tables together","Create a shortcut","Optimize queries"], answer:"Link tables together"},
+{q:"What is the function of the PRIMARY KEY constraint?", options:["Enforces uniqueness and non-null values","Allows duplicate rows","Stores large data","Links tables"], answer:"Enforces uniqueness and non-null values"},
+{q:"Which command removes a table from the database?", options:["DELETE TABLE","DROP TABLE","REMOVE TABLE","TRUNCATE TABLE"], answer:"DROP TABLE"},
+{q:"What does the UPDATE command do?", options:["Creates rows","Modifies existing records","Deletes tables","Creates table structure"], answer:"Modifies existing records"},
+{q:"Which SQL clause filters rows in a SELECT query?", options:["WHERE","HAVING","ORDER BY","GROUP BY"], answer:"WHERE"},
+{q:"Which SQL command is used to change the structure of an existing table?", options:["ALTER TABLE","UPDATE TABLE","MODIFY TABLE","CHANGE TABLE"], answer:"ALTER TABLE"},
+{q:"Which SQL clause is used to remove specific rows from a table?", options:["DROP","DELETE","TRUNCATE","REMOVE"], answer:"DELETE"},
+{q:"Which command retrieves data from a table?", options:["READ","GET","SELECT","FETCH"], answer:"SELECT"},
+{q:"Which SQL command is used to create a new table?", options:["CREATE","INSERT","UPDATE","ALTER"], answer:"CREATE"},
+{q:"Which statement updates all students in year level 2 to year level 3?", options:["UPDATE students SET year_level = 3 WHERE year_level = 2;","ALTER students SET year_level = 3;","INSERT INTO students (year_level) VALUES (3);","UPDATE students WHERE year_level = 2 SET year_level = 3;"], answer:"UPDATE students SET year_level = 3 WHERE year_level = 2;"},
+{q:"When inserting records, omitting the primary key column works when:", options:["The column is optional","The column is auto-incremented","The column is VARCHAR","The column is foreign key"], answer:"The column is auto-incremented"}
 ];
 
-let current = 0;
-let score = 0;
-let wrongAnswers = [];
+let index = 0;
+let userAnswers = new Array(quizData.length).fill(null);
 
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const nextBtn = document.getElementById("next-btn");
-const resultEl = document.getElementById("result");
-const wrongListEl = document.getElementById("wrong-list");
+const questionText = document.getElementById('questionText');
+const optionsEl = document.getElementById('options');
+const progressEl = document.getElementById('progress');
+const statusTop = document.getElementById('statusTop');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 
-function showQuestion() {
-  const q = quizData[current];
-  questionEl.textContent = `${current + 1}. ${q.q}`;
-  optionsEl.innerHTML = "";
-  q.options.forEach(option => {
-    const btn = document.createElement("button");
-    btn.classList.add("option");
-    btn.textContent = option;
-    btn.onclick = () => selectAnswer(option);
+const resultsArea = document.getElementById('resultsArea');
+const scoreText = document.getElementById('scoreText');
+const summaryText = document.getElementById('summaryText');
+const wrongContainer = document.getElementById('wrongContainer');
+const reviewBtn = document.getElementById('reviewBtn');
+const reviewAll = document.getElementById('reviewAll');
+const reviewGrid = document.getElementById('reviewGrid');
+const retakeBtn = document.getElementById('retakeBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const closeReviewBtn = document.getElementById('closeReviewBtn');
+
+function renderQuestion(){
+  const q = quizData[index];
+  progressEl.textContent = `Question ${index+1} / ${quizData.length}`;
+  questionText.textContent = `${index+1}. ${q.q}`;
+  optionsEl.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.type = 'button';
+    btn.innerText = opt;
+    btn.setAttribute('role','option');
+    // highlight selection
+    if(userAnswers[index] === opt) btn.classList.add('selected');
+    btn.addEventListener('click', ()=> {
+      // record answer
+      userAnswers[index] = opt;
+      // update UI
+      Array.from(optionsEl.children).forEach(c=>c.classList.remove('selected'));
+      btn.classList.add('selected');
+      nextBtn.disabled = false;
+    });
     optionsEl.appendChild(btn);
+  });
+
+  // prev/next logic
+  prevBtn.disabled = index === 0;
+  nextBtn.textContent = (index === quizData.length - 1) ? 'Finish' : 'Next ▶';
+  nextBtn.disabled = userAnswers[index] === null;
+  statusTop.textContent = `Progress: ${index+1}/${quizData.length}`;
+}
+
+prevBtn.addEventListener('click', ()=>{
+  if(index > 0){
+    index--;
+    renderQuestion();
+  }
+});
+
+nextBtn.addEventListener('click', ()=>{
+  if(index < quizData.length - 1){
+    index++;
+    renderQuestion();
+  } else {
+    // finish - show results
+    showResults();
+  }
+});
+
+function showResults(){
+  // calculate score and wrongs
+  let score = 0;
+  const wrongs = [];
+  for(let i=0;i<quizData.length;i++){
+    const correct = quizData[i].answer;
+    const selected = userAnswers[i];
+    if(selected === correct) score++;
+    else wrongs.push({num:i+1, question:quizData[i].q, correct, selected});
+  }
+
+  // hide quizArea, show results
+  document.getElementById('quizArea').style.display = 'none';
+  resultsArea.style.display = 'block';
+
+  scoreText.textContent = `You scored ${score} out of ${quizData.length} (${Math.round(score/quizData.length*100)}%)`;
+  summaryText.textContent = wrongs.length === 0 ? 'Perfect! You got them all right 🎉' : `You missed ${wrongs.length} question(s). Scroll below to see details.`;
+
+  // populate wrong container
+  wrongContainer.innerHTML = '';
+  if(wrongs.length > 0){
+    const list = document.createElement('div');
+    list.className = 'wrong-list';
+    wrongs.forEach(w => {
+      const item = document.createElement('div');
+      item.className = 'wrong-item';
+      const qnum = document.createElement('div');
+      qnum.className = 'qnum';
+      qnum.innerText = `Question ${w.num}`;
+      const qtext = document.createElement('div');
+      qtext.style.marginTop='6px';
+      qtext.innerText = w.question;
+      const correctLine = document.createElement('div');
+      correctLine.innerHTML = `Correct answer: <span class="correct-answer">${w.correct}</span>`;
+      const yourLine = document.createElement('div');
+      yourLine.innerHTML = `Your answer: <span class="your-answer">${w.selected === null ? 'No answer' : w.selected}</span>`;
+      item.appendChild(qnum);
+      item.appendChild(qtext);
+      item.appendChild(correctLine);
+      item.appendChild(yourLine);
+      list.appendChild(item);
+    });
+    wrongContainer.appendChild(list);
+  } else {
+    const p = document.createElement('p');
+    p.style.marginTop = '6px';
+    p.textContent = 'Great job! No wrong answers.';
+    wrongContainer.appendChild(p);
+  }
+
+  // build Review All
+  buildReviewAll();
+}
+
+function buildReviewAll(){
+  reviewGrid.innerHTML = '';
+  quizData.forEach((q,i) => {
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    const h = document.createElement('div');
+    h.style.fontWeight='700';
+    h.innerText = `${i+1}. ${q.q}`;
+    card.appendChild(h);
+    const ul = document.createElement('div');
+    ul.style.marginTop='8px';
+    q.options.forEach(opt => {
+      const div = document.createElement('div');
+      div.style.padding='6px 8px';
+      div.style.borderRadius='6px';
+      div.style.marginBottom='6px';
+      if(opt === q.answer) {
+        div.className = 'opt-correct';
+        div.innerText = `✓ ${opt} (Correct)`;
+      } else if(userAnswers[i] === opt) {
+        div.className = 'opt-wrong';
+        div.innerText = `✕ ${opt} (You chose this)`;
+      } else {
+        div.innerText = `• ${opt}`;
+      }
+      ul.appendChild(div);
+    });
+    card.appendChild(ul);
+    reviewGrid.appendChild(card);
   });
 }
 
-function selectAnswer(option) {
-  const correct = quizData[current].answer;
-  if (option === correct) {
-    score++;
-  } else {
-    wrongAnswers.push(current + 1);
-  }
-  nextQuestion();
-}
+/* retake logic */
+retakeBtn.addEventListener('click', ()=>{
+  // reset
+  index = 0;
+  userAnswers = new Array(quizData.length).fill(null);
+  document.getElementById('quizArea').style.display = 'block';
+  resultsArea.style.display = 'none';
+  reviewAll.style.display = 'none';
+  closeReviewBtn.style.display = 'none';
+  nextBtn.disabled = true;
+  renderQuestion();
+});
 
-function nextQuestion() {
-  current++;
-  if (current < quizData.length) {
-    showQuestion();
-  } else {
-    showResult();
-  }
-}
+/* review button */
+reviewBtn.addEventListener('click', ()=>{
+  reviewAll.style.display = reviewAll.style.display === 'none' ? 'block' : 'none';
+  closeReviewBtn.style.display = reviewAll.style.display === 'block' ? 'inline-block' : 'none';
+});
+closeReviewBtn.addEventListener('click', ()=> {
+  reviewAll.style.display = 'none';
+  closeReviewBtn.style.display = 'none';
+});
 
-function showResult() {
-  document.getElementById("quiz").style.display = "none";
-  resultEl.style.display = "block";
-  resultEl.textContent = `You scored ${score} out of ${quizData.length}!`;
-  if (wrongAnswers.length > 0) {
-    wrongListEl.textContent = `You got these numbers wrong: ${wrongAnswers.join(", ")}`;
-  } else {
-    wrongListEl.textContent = "Perfect score! 🎉";
+/* download results as text file */
+downloadBtn.addEventListener('click', ()=>{
+  let text = `Quiz results - ${new Date().toLocaleString()}\n\n`;
+  let score = 0;
+  for(let i=0;i<quizData.length;i++){
+    const correct = quizData[i].answer;
+    const selected = userAnswers[i];
+    if(selected === correct) score++;
+    text += `${i+1}. ${quizData[i].q}\n   Correct: ${correct}\n   Your: ${selected === null ? 'No answer' : selected}\n\n`;
   }
-}
+  text = `Score: ${score}/${quizData.length}\n\n` + text;
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'quiz_results.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
 
-nextBtn.onclick = nextQuestion;
-showQuestion();
+/* initialize */
+renderQuestion();
 </script>
 </body>
 </html>
