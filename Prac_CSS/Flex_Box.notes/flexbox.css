@@ -1,0 +1,47 @@
+/* flex property : 
+    flex-direction
+    column-gap
+    row-gap
+    flex-wrap
+    justify-content
+    align-content
+*/
+
+.container{
+    display: flex;
+    border: 10px solid black;
+    height: 90vh;
+    align-content: flex-start;
+   
+}
+
+.box {
+    width: 150px;
+    height: 150px;
+    font-size:  8em;
+    text-align: center;
+    border-radius: 15px;
+}
+
+/* for inline:
+
+    align-self 
+    order
+*/
+
+#box1{
+    background-color: red;
+
+}
+
+#box2{
+    background-color: rgb(41, 219, 41);
+}
+
+#box3{
+    background-color: rgb(104, 24, 209);
+}
+
+#box4{
+    background-color: rgb(159, 233, 22);
+}
